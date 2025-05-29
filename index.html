@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wheatherly</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      color: #0077b6;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      padding: 16px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      width: 300px;
+      max-width: 80vw;
+    }
+
+    button {
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 24px;
+      font-size: 16px;
+      /* cursor: pointer; */
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005f8f;
+    }
+
+    /* === Стили для телефонов === */
+    @media (max-width: 480px) {
+      .input-group {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      input[type="text"] {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><strong>Wheatherly</strong></h1>
+    <div class="input-group">
+      <input type="text" placeholder="Введите город..." autofocus/>
+      <button>Узнать погоду</button>
+    </div>
+  </div>
+</body>
+</html>
