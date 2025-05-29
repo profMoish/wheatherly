@@ -6,82 +6,152 @@
   <title>Wheatherly</title>
   <style>
     * {
-      box-sizing: border-box;
+        box-sizing: border-box;
     }
 
     body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: sans-serif;
-      background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        background-color: #f9f9f9;
+        color: #0077b6;
     }
 
     .container {
-      text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100svh;
+        padding-top: 15vh; /* TODO: центрировать по вертикали */
+        padding-bottom: 10vh;
+        transition: padding 0.3s ease;
     }
 
     h1 {
-      color: #0077b6;
-      margin-bottom: 20px;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
     }
 
-    .input-group {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 10px;
+    .subtitle {
+        margin: 1rem 0 2rem;
+        font-size: 1.2rem;
+        font-weight: 500;
+        text-align: center;
+        max-width: 90%;
     }
 
-    input[type="text"] {
-      padding: 16px;
-      font-size: 18px;
-      border-radius: 12px;
-      border: 1px solid #ccc;
-      width: 300px;
-      max-width: 80vw;
+    .search-box {
+        font-size: 1.5rem;
+        padding: 1rem 1.5rem;
+        border: 1px solid #ccc;
+        border-radius: 1rem;
+        width: 90%;
+        max-width: 400px;
     }
 
-    button {
+
+    .suggestions {
+        margin-top: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        
+        max-width: 600px;
+    }
+
+    .suggestion {
       background-color: #0077b6;
       color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 16px 24px;
-      font-size: 16px;
-      /* cursor: pointer; */
-      transition: background-color 0.3s ease;
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
     }
 
-    button:hover {
-      background-color: #005f8f;
-    }
-
-    /* === Стили для телефонов === */
-    @media (max-width: 480px) {
-      .input-group {
-        flex-direction: column;
-      }
-
-      button {
-        width: 100%;
-      }
-
-      input[type="text"] {
-        width: 100%;
-      }
+    .suggestion:hover {
+      background-color: #005f94; 
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1><strong>Wheatherly</strong></h1>
-    <div class="input-group">
-      <input type="text" placeholder="Введите город..." autofocus/>
-      <button>Узнать погоду</button>
+    <p class="subtitle">В два клика узнай погоду в любом городе мира</p>
+   
+    <input type="text" class="search-box" id="search-box" placeholder="Введите город…" /> 
+   
+    <div class="suggestions" id="suggestions">
+         
+        <div class="suggestion" onclick="getWeather(-34.61315, -58.37723)">Буэнос-Айрес</div>
+        <div class="suggestion" onclick="getWeather(55.75222, 37.61556)">Москва</div>
+        <div class="suggestion" onclick="getWeather(51.50853, -0.12574)">Лондон</div>
+        <div class="suggestion" onclick="getWeather(50.08804, 14.42076)">Прага</div>
+        <div class="suggestion" onclick="getWeather(43.70313, 7.26608)">Ницца</div>
+        <div class="suggestion" onclick="getWeather(35.6895, 139.69171)">Токио</div>
+        <div class="suggestion" onclick="getWeather(39.9075, 116.39723)">Пекин</div>
+        <div class="suggestion" onclick="getWeather(40.71427, -74.00597)">Нью-Йорк</div>
+        <div class="suggestion" onclick="getWeather(52.52437, 13.41053)">Берлин</div>
+        <div class="suggestion" onclick="getWeather(48.85341, 2.3488)">Париж</div>
+        <div class="suggestion" onclick="getWeather(59.93863, 30.31413)">Санкт-Петербург</div>
     </div>
   </div>
+  <script>
+      const input = document.getElementById('search-box');
+      const suggestions = document.getElementById('suggestions');
+
+      input.addEventListener('input', async () => {
+        
+
+        const query = input.value.trim();
+
+        // Запрос координат при вводе от 2 символов ("Мо" — самый короткий город, Франция)
+        if (query.length < 2) {
+            suggestions.innerHTML = 'город не найден';
+            return;
+        }
+        suggestions.innerHTML = 'поиск...';
+
+        // TODO: можно расмотрет формат protobuf 
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=ru&format=json`;
+
+        try {
+            // Отправляем запрос на сервер
+            const res = await fetch(url);
+            const data = await res.json();
+
+            // Если нет результатов, то сообщаем пользователю
+            if (!data.results) {
+                suggestions.innerHTML = 'город не найден';
+                return;
+            }
+
+            suggestions.innerHTML = '';
+            // TODO: улучшить автодополнение при ошибках пользователя
+            data.results.forEach((item) => {
+                const div = document.createElement('div');
+                div.classList.add('suggestion');
+                div.textContent = `${item.name}, ${item.country}`;
+                div.addEventListener('click', () => {
+                    input.value = '';
+                    suggestions.innerHTML = '';
+                    getWeather(item.latitude, item.longitude);
+                });
+                suggestions.appendChild(div);
+            });
+        } catch (err) {
+            suggestions.innerHTML = 'приносим извинения, что-то пошло не так';
+            // TODO: отправить ошибку на сервер
+            console.error(err);
+        }
+    });
+
+    function getWeather(latitude, longitude) {
+        alert(latitude + ', ' + longitude);
+    }
+  </script>
 </body>
 </html>
