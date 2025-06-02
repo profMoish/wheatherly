@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wheatherly</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1><strong>Wheatherly</strong></h1>
+    <p class="subtitle">В два клика узнай погоду в любом городе мира</p> 
+    <div id="all-forecasts">  
+
+    </div>
+
+    <div id="loading" hidden>загрузка...</div>
+    <input type="text" class="search-box" id="search-box" placeholder="Введите город…" autocorrect="off" /> 
+   
+    <div class="suggestions" id="suggestions">
+   
+         
+      <div class="suggestion" onclick="getWeather('Буэнос-Айрес, Аргентина', -34.61315, -58.37723)">Буэнос-Айрес, Аргентина</div>
+      <div class="suggestion" onclick="getWeather('Москва, Россия', 55.75222, 37.61556)">Москва, Россия</div>
+      <div class="suggestion" onclick="getWeather('Токио, Япония', 35.6895, 139.69171)">Токио, Япония</div>
+      
+  </div>
+
+  <script src="script.js?v=1234"></script>
+</body>
+</html>
