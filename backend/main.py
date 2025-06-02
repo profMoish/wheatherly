@@ -42,7 +42,7 @@ app.add_middleware(
     allow_origins=allow_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST"],  
-    allow_headers=["Content-Type", "X-User-UUID"],
+    allow_headers=["*"],
 )
 
 # === ВАЛИДАЦИЯ ВХОДНЫХ ДАННЫХ === #
