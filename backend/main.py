@@ -157,7 +157,7 @@ async def get_weather(request: Request, city: str, lat: float, lon: float, db=De
     url = (
         "https://api.open-meteo.com/v1/forecast"
         f"?latitude={lat}&longitude={lon}"
-        "&daily=temperature_2m_min,temperature_2m_max,precipitation_sum&timezone=auto"
+        "&daily=temperature_2m_min,temperature_2m_max,precipitation_sum&timezone=auto&forecast_days=5"
     )
     logger.debug(f"Запрос к Open-Meteo API: {url}")
 
